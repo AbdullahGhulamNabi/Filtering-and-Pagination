@@ -1,7 +1,7 @@
 from ..models import Book, Author, Genre
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from ..serializers import BookSerializer, AuthorSerializer, GenreSerializer
 from rest_framework.decorators import api_view
@@ -9,6 +9,7 @@ from ..serializers import RegistrationSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle , ScopedRateThrottle
 from .throttling import genreThrottle
+from django_filters.rest_framework import DjangoFilterBackend
 
 @api_view(['POST'])
 def logout(request):
@@ -86,6 +87,27 @@ class BooksAuthorAPIView(APIView):
     
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+class FilterBooksAPIView(generics.ListAPIView):
+
+    serializer_class = BookSerializer
+
+    def get_queryset(self):
+        # book_name = self.kwargs['bookname'] we will have to pass the book_name in url
+        book_name = self.request.query_params.get('bookname', None)
+        return Book.objects.filter(title = book_name)
+    
+class DjangoFilterBooksAPIView(generics.ListAPIView):
+
+    serializer_class = BookSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'author__name']
+
+    def get_queryset(self):
+        return Book.objects.all()
+
+
+
 class BooksAPIView(APIView):
 
     permission_classes = [IsAuthenticated]
