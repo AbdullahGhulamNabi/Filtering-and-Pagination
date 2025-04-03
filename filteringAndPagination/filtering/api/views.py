@@ -7,8 +7,9 @@ from ..serializers import BookSerializer, AuthorSerializer, GenreSerializer
 from rest_framework.decorators import api_view
 from ..serializers import RegistrationSerializer
 from rest_framework.authtoken.models import Token
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle 
+from .throttling import genreThrottle
 
-# manual token creation using basic token authentication
 @api_view(['POST'])
 def logout(request):
     if request.method == 'POST':
@@ -26,7 +27,6 @@ def registration_view(request):
             data['username'] = account.username
             data['email'] = account.email
             
-            # Create token for the user
             token = Token.objects.create(user=account)
             data['token'] = token.key
             
@@ -36,9 +36,8 @@ def registration_view(request):
 
 
 class RetrieveUpdateDestroyAPIView(APIView):
-    # permission_classes = [ReviewBooksOrReadOnly]
 
-
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
         try:
@@ -72,6 +71,7 @@ class RetrieveUpdateDestroyAPIView(APIView):
         
 class BooksAuthorAPIView(APIView):
 
+    throttle_classes = [UserRateThrottle,AnonRateThrottle]
 
     def get(self, request):
         queryset = Author.objects.all()
@@ -88,9 +88,8 @@ class BooksAuthorAPIView(APIView):
     
 class BooksAPIView(APIView):
 
-    # permission_classes = [FieldLevelPermission]
-    # permission_classes = [ ContentTypePermission]
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle]
 
     def get_queryset(self):
         return Book.objects.all()
@@ -112,7 +111,8 @@ class BooksAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class GenreAPIView(APIView):
-    # permission_classes = [ReviewBooksOrReadOnly]
+
+    throttle_classes = [genreThrottle]
 
     def get(self, request):
         try:
