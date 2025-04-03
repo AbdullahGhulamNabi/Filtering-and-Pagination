@@ -9,6 +9,7 @@ from ..serializers import RegistrationSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle , ScopedRateThrottle
 from .throttling import genreThrottle
+from .pagination import bookPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -112,6 +113,7 @@ class SearchBooksAPIView(generics.ListAPIView):
 
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    pagination_class = bookPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'author__name']
 
