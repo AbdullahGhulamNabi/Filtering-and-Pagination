@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    'rest_framework.authtoken',
+    "filtering",
 ]
 
 MIDDLEWARE = [
@@ -120,3 +124,22 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    }
+}
+
+
+
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKEN' : True,
+    'BLACKLIST_AFTER_ROTATION': True, 
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
