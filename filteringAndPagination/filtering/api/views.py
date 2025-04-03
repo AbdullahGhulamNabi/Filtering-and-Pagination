@@ -1,7 +1,7 @@
 from ..models import Book, Author, Genre
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
-from rest_framework import status, generics
+from rest_framework import status, generics, filters
 from rest_framework.response import Response
 from ..serializers import BookSerializer, AuthorSerializer, GenreSerializer
 from rest_framework.decorators import api_view
@@ -105,6 +105,15 @@ class DjangoFilterBooksAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return Book.objects.all()
+    
+class SearchBooksAPIView(generics.ListAPIView):
+
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'author__name']
+
+
 
 
 
