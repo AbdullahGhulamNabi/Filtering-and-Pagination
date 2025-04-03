@@ -133,6 +133,7 @@ REST_FRAMEWORK = {
         'anon': '1/day',
         'user': '3/day',
         'genre': '15/day',
+        'genre-scope': '2/day',
     }
 }
 

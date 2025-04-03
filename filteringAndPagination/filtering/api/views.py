@@ -7,7 +7,7 @@ from ..serializers import BookSerializer, AuthorSerializer, GenreSerializer
 from rest_framework.decorators import api_view
 from ..serializers import RegistrationSerializer
 from rest_framework.authtoken.models import Token
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle 
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle , ScopedRateThrottle
 from .throttling import genreThrottle
 
 @api_view(['POST'])
@@ -112,7 +112,9 @@ class BooksAPIView(APIView):
 
 class GenreAPIView(APIView):
 
-    throttle_classes = [genreThrottle]
+    # throttle_classes = [genreThrottle] instead of this use scope throttle class preventing the creation of extra throttling.py class
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'genre-scope'
 
     def get(self, request):
         try:
