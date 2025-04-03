@@ -137,6 +137,9 @@ REST_FRAMEWORK = {
         'genre-scope': '2/day',
     },
 
+    'DEFAULT_RENDERER_CLASSES':(
+        'rest_framework.renderers.JSONRenderer',
+    )
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 3 applies on every api(having other that APIView)
 }
