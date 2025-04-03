@@ -11,6 +11,8 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle , Scope
 from .throttling import genreThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 
+
+
 @api_view(['POST'])
 def logout(request):
     if request.method == 'POST':
@@ -119,8 +121,8 @@ class SearchBooksAPIView(generics.ListAPIView):
 
 class BooksAPIView(APIView):
 
-    permission_classes = [IsAuthenticated]
-    throttle_classes = [UserRateThrottle]
+    # permission_classes = [IsAuthenticated]
+    # throttle_classes = [UserRateThrottle]
 
     def get_queryset(self):
         return Book.objects.all()
